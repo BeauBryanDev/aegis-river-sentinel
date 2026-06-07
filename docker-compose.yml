@@ -1,0 +1,64 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+      # build args
+      args:
+        - REQUIREMENTS_FILE=requirements-dev.txt
+
+    container_name: riverwatch_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./weights:/app/weights
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - MODEL_SEGFORMER_PATH=/app/weights/segformer_best.onnx
+      - MODEL_RAFT_PATH=/app/weights/raft_small.pth
+
+      - OMP_NUM_THREADS=4
+      - MKL_NUM_THREADS=4
+
+    command: ['uvicorn', 'app.main:app', '--host', '0.0.0.0', '--port', '8000', '--reload']
+
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - riverwatch_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: postgres:16-alpine
+    container_name: riverwatch_db
+    ports:
+      - "5438:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - riverwatch_net
+
+volumes:
+  postgres_data:
+
+networks:
+  riverwatch_net:
+    driver: bridge
