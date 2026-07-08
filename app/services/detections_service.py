@@ -47,17 +47,19 @@ class DetectionsService:
             metrics: dict from WaterFlowService.compute_metrics()
 
         Returns:
-            dict with:
-                z_scores        per-metric Z-Score values
-                anomaly_score   max absolute Z-Score across metrics
-                anomaly_flag    True if score exceeds threshold
-                severity        LOW / MEDIUM / HIGH or None
-                is_warm         whether baseline is ready
+        dict with:
+            z_scores        per-metric Z-Score values
+            anomaly_score   max absolute Z-Score across metrics
+            anomaly_flag    True if score exceeds threshold
+            severity        LOW / MEDIUM / HIGH or None
+            is_warm         whether baseline is ready
         """
         z_scores = {key: 0.0 for key in self.METRIC_KEYS}
 
         if not self.is_warm():
+            
             for key in self.METRIC_KEYS:
+                
                 self.history[key].append(metrics[key])
 
             return {
@@ -69,6 +71,7 @@ class DetectionsService:
             }
 
         for key in self.METRIC_KEYS:
+            
             baseline    = np.array(self.history[key], dtype=np.float64)
             mean        = float(np.mean(baseline))
             std         = float(np.std(baseline))
