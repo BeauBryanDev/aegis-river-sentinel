@@ -2,7 +2,7 @@
 
 River anomaly detection and surface velocity estimation [px/s] from fixed-camera video footage.
 
-<img src="./optical_water_flow.png" alt="Optical water flow" width="250" style="display:block; margin:8px auto; border-radius:8px;" />
+<img src="./frontend/src/assets/river_watch_icon.webp" alt="Optical water flow" width="250" style="display:block; margin:8px auto; border-radius:8px;" />
 
 ## Overview
 
