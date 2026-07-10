@@ -58,14 +58,14 @@ class PipelineService:
         Run the full pipeline over a single video.
 
         Args:
-            video_id:  id of the Video row to process
-            db:   active SQLAlchemy session
-            write_visualization: whether to render an output video
+        video_id:  id of the Video row to process
+        db:   active SQLAlchemy session
+        write_visualization: whether to render an output video
 
         Returns:
-            dict with processing summary:
-            frames_processed, frames_skipped, analyses_created,
-            alerts_created, output_path
+        dict with processing summary:
+        frames_processed, frames_skipped, analyses_created,
+        alerts_created, output_path
         """
         video = video_service.get(video_id, db)
         
@@ -89,7 +89,8 @@ class PipelineService:
             video_service.mark_failed(video_id, tb, db)
             
             raise
-
+        
+    # Run the full pipeline over a single video, returning a summary of results.
     def _run(
         self,
         video,
@@ -228,6 +229,7 @@ class PipelineService:
             "alerts_created":   alerts_created,
             "output_path":      output_path,
         }
+
 
     def _flush_analyses(
         self,
