@@ -1,8 +1,7 @@
-from sqlalchemy import String, Float, Integer, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy import Float, Integer, Boolean, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from typing import Optional
-from  alerts import Alert
 
 from app.core.database import Base
 
@@ -29,7 +28,9 @@ class Analysis(Base):
     created_at     = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     video   = relationship("Video", back_populates="analyses")
+    
     alerts: Mapped[list["Alert"]] = relationship(
+        
         back_populates="analysis",
         cascade="all, delete-orphan",
     )

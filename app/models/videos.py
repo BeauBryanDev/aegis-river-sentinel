@@ -2,6 +2,8 @@ from sqlalchemy import String, Float, Integer, ForeignKey, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from typing import List, Optional
+from  alerts import Alert
+from analysis import Analysis
 
 from app.core.database import Base
 
